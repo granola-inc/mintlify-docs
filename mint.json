@@ -7,6 +7,8 @@
     "href": "https://www.granola.ai/"
   },
   "favicon": "/favicon.png",
+  "theme": "quill",
+  "rounded": "default",
   "colors": {
     "primary": "#003720",
     "light": "#8cea76",
@@ -16,8 +18,11 @@
       "to": "#8cea76"
     }
   },
-  "background": {"style": "gradient"},
   "topbarLinks": [
+    {
+      "name": "Blog",
+      "url": "https://www.granola.ai/blog"
+    },
     {
       "name": "Support",
       "url": "mailto:hey@granola.so"
@@ -28,13 +33,7 @@
     "url": "https://go.granola.so/windows",
     "arrow": false
   },
-  "tabs": [
-    {
-      "name": "Changelog",
-      "url": "changelog"
-    }
-  ],
-  "font":{
+  "font": {
     "headings": {
       "family": "__radion_73225f",
       "url": "https://www.granola.ai/_next/static/media/87dce1026c7f9fbd-s.p.woff2",
@@ -42,29 +41,43 @@
       "weight": 700
     }
   },
+  "topAnchor": {
+    "name": "Help center",
+    "icon": "building"
+  },
   "anchors": [
     {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://www.granola.ai/blog"
+      "name": "Slack Community",
+      "icon": "slack",
+      "url": "https://go.granola.so/slack"
     },
     {
       "name": "Contact Us",
       "icon": "headset",
       "url": "https://www.granola.ai/contact"
+    },
+    {
+      "name": "API Reference",
+      "url": "api-reference",
+      "icon": "book",
+      "color": "#007bff"
     }
   ],
-  "primaryTab": {
-    "name": "Granola Guidebook"
-  },
   "navigation": [
     {
+      "group": "Start here",
+      "pages": ["changelog/changelog"]
+    },
+    {
       "group": "Guides",
+      "pages": ["docs/Consent-Granola-2762c80ac894433b9fd5acc5681c84a3"]
+    },
+    {
+      "group": "Integrations",
       "pages": [
         "docs/Affinity-Integration-7b62d10020ff4778922376b2e4aa8b49",
         "docs/Using-Granola-with-Outlook-Calendar-30ed2eaa2f074a8b9ba7eb48161042d6",
-        "docs/Adding-Private-Slack-channels-a470176a5ca64037ac3683b5ada10ebe",
-        "docs/Consent-Granola-2762c80ac894433b9fd5acc5681c84a3"
+        "docs/Adding-Private-Slack-channels-a470176a5ca64037ac3683b5ada10ebe"
       ]
     },
     {
@@ -73,8 +86,7 @@
         "docs/Account-Setup-&-Access",
         "docs/Language-Support-&-Localization"
       ]
-    },
-   
+    }
   ],
   "footerSocials": {
     "x": "https://twitter.com/meetgranola",
