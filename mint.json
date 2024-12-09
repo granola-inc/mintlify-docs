@@ -9,6 +9,10 @@
   "favicon": "/favicon.png",
   "theme": "quill",
   "rounded": "default",
+  "modeToggle": {
+    "default": "light",
+    "isHidden": true
+  },
   "colors": {
     "primary": "#003720",
     "light": "#8cea76",
@@ -65,7 +69,7 @@
   ],
   "navigation": [
     {
-      "group": "Start here",
+      "group": "Updates",
       "pages": ["changelog/changelog"]
     },
     {
