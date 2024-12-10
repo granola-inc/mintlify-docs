@@ -80,6 +80,12 @@
       ]
     },
     {
+      "group": "After Your Meeting",
+      "pages": [
+        "docs/101/editing-your-enhanced-notes"
+      ]
+    },
+    {
       "group": "Integrations",
       "pages": [
         "docs/Affinity-Integration-7b62d10020ff4778922376b2e4aa8b49",

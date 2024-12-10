@@ -1,0 +1,32 @@
+---
+title: "Editing your enhanced notes"
+description: "Everything you need to know about what happens after your meeting"
+---
+
+### What happens when I finish a call? 
+
+Granola will automatically enhance your notes using the default format. This format is designed to create the best possible notes without the additional context of a custom template. 
+
+If you have typed your own notes, the enhanced notes will be both grey and black. The black notes are notes that have been brought through from your own notes, and the grey notes are notes that have been added by Granola.
+
+### Understanding where the enhanced notes come from
+
+Because LLMs aren't always reliable, Granola includes two tools to help you investigate your enhanced notes to feel confident in them: 
+
+1. Use the magnifying glass beside each note to see where in the transcript or raw notes the note came from
+
+2. Use Ask Granola (cmnd+F) to pull out quotes from the transcript that support the line you're investigating
+
+
+### Editing your notes after they've been enhanced
+
+Even after Granola has enhanced your notes, you can still edit them, either by editing the enhanced notes directly, or by returning to the raw notes and editing them there, before re-enhancing them. 
+
+## Editing the enhanced notes directly 
+
+You can just directly click on any note and edit it. If a note was grey because it was added by Granola, it will turn black, to show that you authored it. 
+
+## Editing the raw notes
+
+You can also return to the raw notes and edit them there, before re-enhancing them. This will completely regenerate the enhanced notes, so if you have made any changes to the enhanced notes, they will be lost. 
+
