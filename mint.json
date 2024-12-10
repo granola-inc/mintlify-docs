@@ -75,7 +75,8 @@
     {
       "group": "During Your Meeting",
       "pages": ["docs/101/live-transcription",
-      "docs/101/Note-taking-tools"]
+      "docs/101/note-taking-tools"
+      ]
     },
     {
       "group": "Integrations",
