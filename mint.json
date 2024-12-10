@@ -74,8 +74,8 @@
     },
     {
       "group": "During Your Meeting",
-      "pages": ["docs/Consent-Granola-2762c80ac894433b9fd5acc5681c84a3",
-      "docs/101/live-transcription"]
+      "pages": ["docs/101/live-transcription",
+      "docs/101/Note-taking-tools"]
     },
     {
       "group": "Integrations",
@@ -89,7 +89,8 @@
       "group": "FAQs",
       "pages": [
         "docs/Account-Setup-&-Access",
-        "docs/Language-Support-&-Localization"
+        "docs/Language-Support-&-Localization,
+        "docs/Consent-Granola-2762c80ac894433b9fd5acc5681c84a3"
       ]
     }
   ],
