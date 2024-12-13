@@ -3,6 +3,9 @@ title: "Live Transcription"
 description: "Everything you need to know about Granola's live transcription service"
 ---
 
+![title](/images/livetranscription)
+
+
 ### When does transcription begin?
 
 For a calendar event, Granola begins transcribing only when you have opened a set of meeting notes, and only from the start time of the calendar event. You can choose to start transcription manually if you want to start it earlier. &#x20;
@@ -17,11 +20,23 @@ Transcription ends under these circumstances:
 
 * You exit out of your set of notes (the notes must be open to ensure transcription)
 
+* You manually end the transcription by clicking the stop button
+
 * Granola recognises that you have stopped using your mic (by exiting your meeting platform like Zoom)
 
-* You manually end the transcription
+* Granola identifies that there has been a long period of silence
 
-### Viewing the Transcript
+### Resuming transcription
+
+If your transcription has ended, you can resume it by opening the transcription window and clicking resume in the top right hand corner.&#x20;
+
+![](SCR-20241213-nhru.png)
+
+### Dancing bars
+
+The green dancing bars show when Granola is actively transcribing. Occasionally, if your network connection drops or Granola detects silence for too long, transcription may stop. You can resume transcription and open the live transcript window to check that it's working again.
+
+### Viewing the transcript
 
 Open your live transcript at any time during the meeting by clicking the "dancing bars" icon. This lets you:
 
@@ -30,6 +45,10 @@ Open your live transcript at any time during the meeting by clicking the "dancin
 * Verify audio is working correctly
 
 * Review recent discussion points
+
+### Exporting the transcript
+
+
 
 ### How can I query a live meeting?
 
@@ -41,25 +60,13 @@ Use cmnd+S to open the Ask Granola sidebar and ask questions of the transcript u
 
 * "Can you list all the actions I've agreed to take in this meeting so far?"&#x20;
 
-### Audio Status
-
-The audio indicator shows when Granola is actively transcribing. Look for:
-
-* Green indicator for active transcription
-
-* Microphone status
-
-* System audio status
-
-* Audio device selection
-
 ### FAQs
 
 <AccordionGroup>
   <Accordion title="Why doesn't the transcript show exactly who is speaking?" defaultOpen={false}>
     Our system uses system audio and microphone audio to distinguish between speakers ("me" vs "them") without needing a meeting bot in your calls. As a result, your transcripts will only distinguish between audio that comes from your mic vs your system audio and real-time speaker identification remains technically challenging.
 
-    We offer two tools to help you work with transcripts:
+    We offer two tools to help you get the information you need from the transcripts:
 
     * A zoom in function in your enhanced notes for detailed transcript review
 
