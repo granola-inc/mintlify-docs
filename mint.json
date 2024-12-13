@@ -72,6 +72,14 @@
       "group": "Updates",
       "pages": ["changelog/changelog"]
     },
+     {
+      "group": "Getting started",
+      "pages": [
+      "101.mdmx",
+        "docs/101/gettingstarted",
+        "docs/101/permissionsandprivacy"
+      ]
+    },
     {
       "group": "During Your Meeting",
       "pages": [
