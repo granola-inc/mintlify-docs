@@ -75,6 +75,7 @@
      {
       "group": "Getting started",
       "pages": [
+      "101.mdmx",
         "docs/101/gettingstarted",
         "docs/101/permissionsandprivacy"
       ]
