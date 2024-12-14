@@ -69,9 +69,26 @@
       "group": "Updates",
       "pages": ["changelog/changelog"]
     },
+     {
+      "group": "Getting started",
+      "pages": [
+      "101.mdmx",
+        "docs/101/gettingstarted",
+        "docs/101/permissionsandprivacy"
+      ]
+    },
     {
-      "group": "Guides",
-      "pages": ["docs/Consent-Granola-2762c80ac894433b9fd5acc5681c84a3"]
+      "group": "During Your Meeting",
+      "pages": [
+        "docs/101/live-transcription",
+        "docs/101/note-taking-tools"
+      ]
+    },
+    {
+      "group": "After Your Meeting",
+      "pages": [
+        "docs/101/editing-your-enhanced-notes"
+      ]
     },
     {
       "group": "Integrations",
@@ -84,7 +101,8 @@
       "group": "FAQs",
       "pages": [
         "docs/Account-Setup-&-Access",
-        "docs/Language-Support-&-Localization"
+        "docs/Language-Support-&-Localization",
+        "docs/Consent-Granola-2762c80ac894433b9fd5acc5681c84a3"
       ]
     },
     {
