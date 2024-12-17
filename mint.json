@@ -76,25 +76,24 @@
      {
       "group": "Getting started",
       "pages": [
-      "101.mdmx",
-      "docs/101/1.quickstart",
-        "docs/101/1.settingyouraccountup",
-        "docs/101/2.calendarintegration"
+      "docs/101/gettingstarted/1.quickstart",
+        "docs/101/gettingstarted/1.settingyouraccountup",
+        "docs/101/gettingstarted/2.calendarintegrations"
       ]
     },
     {
       "group": "During Your Meeting",
       "pages": [
-        "docs/101/live-transcription",
-        "docs/101/note-taking-tools"
+        "docs/101/duringyourmeeting/live-transcription",
+        "docs/101/duringyourmeeting/note-taking-tools"
       ]
     },
     {
       "group": "After Your Meeting",
       "pages": [
-        "docs/101/editing-your-enhanced-notes",
-        "docs/101/getting-better-notes",
-        "docs/101/Usingtemplates"
+        "docs/101/afteryourmeeting/editing-your-enhanced-notes",
+        "docs/101/afteryourmeeting/getting-better-notes",
+        "docs/101/afteryourmeeting/Usingtemplates"
       ]
     },
     {
