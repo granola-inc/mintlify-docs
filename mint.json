@@ -79,21 +79,22 @@
       "101.mdmx",
       "docs/101/1.quickstart",
         "docs/101/1.settingyouraccountup",
-        "docs/101/2.calendarintegrations"
+        "docs/101/2.calendarintegration"
       ]
     },
     {
       "group": "During Your Meeting",
       "pages": [
-        "docs/101/3.live-transcription",
+        "docs/101/live-transcription",
         "docs/101/note-taking-tools"
       ]
     },
     {
       "group": "After Your Meeting",
       "pages": [
-        "docs/101/31.editing-your-enhanced-notes",
-        "docs/101/getting-better-notes"
+        "docs/101/editing-your-enhanced-notes",
+        "docs/101/getting-better-notes",
+        "docs/101/Usingtemplates"
       ]
     },
     {
