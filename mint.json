@@ -65,36 +65,38 @@
     }
   ],
   "navigation": [
-    {
-      "group": "Updates",
-      "pages": ["changelog/changelog"]
-    },
+  {
+  "group":"Start here",
+  "pages":["docs/home"]
+  },
      {
       "group": "Getting started",
       "pages": [
-      "101.mdmx",
-        "docs/101/gettingstarted",
-        "docs/101/permissionsandprivacy"
+      "docs/101/gettingstarted/1.quickstart",
+        "docs/101/gettingstarted/1.settingyouraccountup",
+        "docs/101/gettingstarted/2.calendarintegrations"
       ]
     },
     {
-      "group": "During Your Meeting",
+      "group": "During your meeting",
       "pages": [
-        "docs/101/live-transcription",
-        "docs/101/note-taking-tools"
+        "docs/101/duringyourmeeting/live-transcription",
+        "docs/101/duringyourmeeting/note-taking-tools"
       ]
     },
     {
-      "group": "After Your Meeting",
+      "group": "After your meeting",
       "pages": [
-        "docs/101/editing-your-enhanced-notes"
+        "docs/101/afteryourmeeting/editing-your-enhanced-notes",
+        "docs/101/afteryourmeeting/sharing",
+        "docs/101/afteryourmeeting/Usingtemplates"
       ]
     },
     {
       "group": "Integrations",
       "pages": [
-        "docs/Affinity-Integration-7b62d10020ff4778922376b2e4aa8b49",
-        "docs/Using-Granola-with-Outlook-Calendar-30ed2eaa2f074a8b9ba7eb48161042d6"
+        "docs/integrations/Affinity-Integration-7b62d10020ff4778922376b2e4aa8b49",
+        "docs/integrations/using-granola-with-outlook"
       ]
     },
     {
@@ -102,7 +104,7 @@
       "pages": [
         "docs/Account-Setup-&-Access",
         "docs/Language-Support-&-Localization",
-        "docs/Consent-Granola-2762c80ac894433b9fd5acc5681c84a3"
+        "docs/consent-granola"
       ]
     },
     {
