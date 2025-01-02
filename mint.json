@@ -72,9 +72,9 @@
      {
       "group": "Getting started",
       "pages": [
-      "docs/101/gettingstarted/1.quickstart",
-        "docs/101/gettingstarted/1.settingyouraccountup",
-        "docs/101/gettingstarted/2.calendarintegrations"
+      "docs/101/gettingstarted/quickstart",
+        "docs/101/gettingstarted/settingyouraccountup",
+        "docs/101/gettingstarted/calendarintegrations"
       ]
     },
     {
@@ -102,9 +102,9 @@
     {
       "group": "FAQs",
       "pages": [
-        "docs/Account-Setup-&-Access",
-        "docs/Language-Support-&-Localization",
-        "docs/consent-granola"
+        "docs/FAQs/Language-Support-&-Localization",
+        "docs/FAQs/featurerequests",
+        "docs/FAQs/consent-granola"
       ]
     },
     {
