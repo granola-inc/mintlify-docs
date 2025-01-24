@@ -1,0 +1,41 @@
+---
+title: Automatic Consent Messaging
+description: "Turn this feature on to automatically share a consent message in Teams and Zoom."
+icon: keyboard
+iconType: thin
+---
+Granola offers a way to automatically share a message with the participants of your meeting using the inbuilt chat function in Teams and Zoom. 
+
+### Setting Consent Messaging up
+
+If you navigate to the settings tab in Granola, navigate to the Labs tab and find the "Enable sharing links" toggle
+
+![consentmessage](/images/consent1-1.png)
+
+When you toggle it on for the first time, a security dialog will pop up with the quite scary request to "control your computer"
+
+![consentmessage](/images/consent2.png)
+
+The way we've built this feature requires that we can control which window is foregrounded and run some related processes in the background. This is the only part of Granola that requires this permission, we do not use it elsewhere in the app. 
+
+![consentmessage](/images/consent1-2.png)
+
+Once you've granted this permission, you'll see a text entry box. You can either use our default consent notice, or write your own. 
+
+Now, every time you have a meeting in Google Meet or Zoom, your consent message will automatically send in the chat window of your meeting. 
+
+![consentmessage](/images/chatconsent.png)
+
+### Troubleshooting
+
+## Loom
+
+If you have Loom running when you're on Granola, it will break this functionality unless you switch off the keyboard shortcut for confetti. 
+
+Open up the Loom widget and click on the three dots to open the settings. 
+
+![consentmessage](/images/loom-settings.png)
+
+Open up Preferences and x out of the keyboard shortcut for confetti
+
+![consentmessage](/images/loom-gif.gif)
