@@ -65,14 +65,14 @@
     }
   ],
   "navigation": [
-  {
-  "group":"Start here",
-  "pages":["docs/home"]
-  },
-     {
+    {
+      "group": "Start here",
+      "pages": ["docs/home"]
+    },
+    {
       "group": "Getting started",
       "pages": [
-      "docs/101/gettingstarted/quickstart",
+        "docs/101/gettingstarted/quickstart",
         "docs/101/gettingstarted/settingyouraccountup",
         "docs/101/gettingstarted/calendarintegrations"
       ]
@@ -81,7 +81,7 @@
       "group": "During your meeting",
       "pages": [
         "docs/101/duringyourmeeting/live-transcription",
-        "docs/101/duringyourmeeting/chat-consent,
+        "docs/101/duringyourmeeting/chat-consent",
         "docs/101/duringyourmeeting/note-taking-tools"
       ]
     },
@@ -107,6 +107,10 @@
         "docs/FAQs/featurerequests",
         "docs/FAQs/consent-granola"
       ]
+    },
+    {
+      "group": "Troubleshooting",
+      "pages": ["docs/troubleshooting/bugs"]
     },
     {
       "group": "Legal",
