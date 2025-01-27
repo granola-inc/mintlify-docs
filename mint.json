@@ -65,14 +65,14 @@
     }
   ],
   "navigation": [
-  {
-  "group":"Start here",
-  "pages":["docs/home"]
-  },
-     {
+    {
+      "group": "Start here",
+      "pages": ["docs/home"]
+    },
+    {
       "group": "Getting started",
       "pages": [
-      "docs/101/gettingstarted/quickstart",
+        "docs/101/gettingstarted/quickstart",
         "docs/101/gettingstarted/settingyouraccountup",
         "docs/101/gettingstarted/calendarintegrations"
       ]
