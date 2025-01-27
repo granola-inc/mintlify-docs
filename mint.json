@@ -109,6 +109,10 @@
       ]
     },
     {
+      "group": "Troubleshooting",
+      "pages": ["docs/troubleshooting/bugs"]
+    },
+    {
       "group": "Legal",
       "pages": [
         {
