@@ -111,7 +111,7 @@
     },
     {
       "group": "Troubleshooting",
-      "pages": ["docs/troubleshooting/bugs"]
+      "pages": ["docs/troubleshooting"]
     },
     {
       "group": "Legal",
