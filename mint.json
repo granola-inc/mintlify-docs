@@ -128,6 +128,15 @@
         "policies/privacy/dpa",
         "policies/terms/cdp"
       ]
+    },
+    {
+      "group": "Changelog",
+      "pages": [
+        "changelog/index",
+        "changelog/5.208.0",
+        "changelog/5.175.0",
+        "changelog/5.167.0"
+      ]
     }
   ],
   "footerSocials": {
