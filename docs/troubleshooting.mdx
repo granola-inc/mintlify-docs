@@ -9,26 +9,63 @@ because we're finding and fixing bugs all the time.
 
 ### Problem: Transcription won't start
 
-If Granola quickly switches from "dancing bars" to a spinning wheel, it usually means that Granola can't connect to its transcription service.
+If Granola quickly switches from "dancing bars" to a spinning wheel,
+and no transcript appears in the transcript window,
+this usually means that Granola can't connect to our transcription API.
 
 Common causes and potential fixes:
 
 - For some users, Granola cannot resolve the domain name for our transcription API.
   Try [using `8.8.8.8` as your DNS server.](https://developers.google.com/speed/public-dns/docs/using#macos)
+- For some users, Granola cannot establish a TLS connection to our APIs.
+  Things we have seen that work:
+
+  - turn off your VPN
+  - remove untrusted certificates from Keychain
+
+- For some users, some connections are dropped or time out.
+  Try adjusting or removing your firewall.
 
 ### Problem: Notes won't enhance
 
+If Granola is stuck on "enhancing notes",
+it usually means that Granola can't connect to our "enhance notes" API.
+
 Common causes and potential fixes:
 
-- For some users, Granola cannot resolve the domain name for our "enhance notes" API.
+- For some users, Granola cannot resolve the domain name for our transcription API.
   Try [using `8.8.8.8` as your DNS server.](https://developers.google.com/speed/public-dns/docs/using#macos)
+- For some users, Granola cannot establish a TLS connection to our APIs.
+  Things we have seen that work:
 
-### Problem: Granola slows down my computer
+  - turn off your VPN
+  - remove untrusted certificates from Keychain
+
+- For some users, some connections are dropped or time out.
+  Try adjusting or removing your firewall.
 
 ### Problem: I can't see my calendar events
 
+If Granola is not keeping your calendar up to date,
+it usually means that Granola can't connect to our calendar API.
+
+Common causes and potential fixes:
+
+- For some users, Granola cannot resolve the domain name for our transcription API.
+  Try [using `8.8.8.8` as your DNS server.](https://developers.google.com/speed/public-dns/docs/using#macos)
+- For some users, Granola cannot establish a TLS connection to our APIs.
+  Things we have seen that work:
+
+  - turn off your VPN
+  - remove untrusted certificates from Keychain
+
+- For some users, some connections are dropped or time out.
+  Try adjusting or removing your firewall.
+
 ### Problem: When I have Granola open, it slows typing into other applications
 
-If you're on macOS 15.1, try updating to 15.2.
+If you're on macOS 15.1, try updating to 15.2 or above.
 
 ### Problem: When I have Granola open, Zoom or other meeting platforms lag
+
+Try updating to macOS 15.2 or above.
