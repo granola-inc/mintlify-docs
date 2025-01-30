@@ -132,12 +132,7 @@
     },
     {
       "group": "Changelog",
-      "pages": [
-        "changelog/index",
-        "changelog/5.208.0",
-        "changelog/5.175.0",
-        "changelog/5.167.0"
-      ]
+      "pages": ["changelog"]
     }
   ],
   "footerSocials": {
