@@ -1,0 +1,40 @@
+---
+title: "Security & Privacy FAQ"
+description: "Answers to common questions about how Granola protects your data."
+icon: shield
+iconType: solid
+---
+
+We take your data seriously. Below are common questions regarding how Granola keeps your information safe.
+
+### Do you store audio or video?
+
+No. Granola only stores text transcripts and notes. Audio is processed in real time, but never stored.
+
+### Are my notes private?
+
+Yes. By default, your notes are private to you. Sharing links are off unless you enable them. Granola never auto-sends meeting summaries to other participants.
+
+### Where is data hosted?
+
+We host data in the United States, on secure cloud infrastructure. We do not currently offer on-prem hosting.
+
+### Is data encrypted?
+
+Yes. Granola uses industry-standard encryption to protect your data.
+
+### Can I delete my account & data?
+
+Yes. In **Settings**, there is an option to delete your account, which removes your data from our systems.
+
+### Are you compliant with major data privacy laws?
+
+We comply with relevant data protection laws to the extent applicable, including GDPR for EU users. See our [Privacy Policy](https://go.granola.so/privacy) for more details.
+
+### Are calls automatically transcribed?
+
+They aren't. For each meeting, you can choose whether or not to transcribe.
+
+### More Questions?
+
+Email us at [heyy@granola.so](mailto:hey@granola.so) or check out [Troubleshooting](/docs/troubleshooting) for more tips.
