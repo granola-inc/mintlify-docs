@@ -7,17 +7,19 @@ iconType: thin
 
 ### What happens when I finish a call?
 
-Once Granola recognises that a call has ended, it will automatically enhance your notes using the default format. This format is designed to create the best possible notes without the additional context of a custom template.
+Once Granola [recognises that a call has ended](docs/101/duringyourmeeting/live-transcription#when-does-transcription-end), it will automatically enhance your notes using the default format. This format is designed to create the best possible notes without the additional context of a custom template.
 
 If you have typed your own notes, the enhanced notes will be both grey and black. The black notes are notes that have been brought through from your own notes, and the grey notes are notes that have been added by Granola.
 
+![Your notes vs Granola's](/images/screenshots/black-grey.png)
+
 ### Understanding where the enhanced notes come from
 
-Because LLMs aren't always reliable, Granola includes two tools to help you investigate your enhanced notes to feel confident in them:
+Because LLMs aren't always reliable, Granola includes three features to help you investigate your enhanced notes to feel confident in them:
 
 1. Use the magnifying glass beside each note to see where in the transcript or raw notes the note came from
 
-2. Use Ask Granola (cmnd+F) to pull out quotes from the transcript that support the point you're investigating
+2. Use Ask Granola (cmnd+K) to pull out quotes from the transcript that support the point you're investigating
 
 ### Editing your notes after they've been enhanced
 
@@ -31,6 +33,9 @@ Even after Granola has generated your meeting notes, you can still change them, 
 
   * You can also return to the raw notes and edit them there, before re-enhancing them. Be careful though, this will completely regenerate the enhanced notes, so if you have made any changes to the enhanced notes, they will be lost.
 
-### Using templates
+![My notes vs Granola's](/images/screenshots/my-notes.png)
 
-Once your meeting is finished, you can apply a template to your notes. This is especially helpful if you have lots of recurring meetings and you want to keep your notes consistent.
+### Next Steps
+
+- For recurring meeting types (like standups, 1:1s), see [Using Templates](/docs/101/afteryourmeeting/using-templates).  
+- Want to share your notes? Check out [Sharing](/docs/101/afteryourmeeting/sharing).

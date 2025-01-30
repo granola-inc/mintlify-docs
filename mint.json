@@ -81,6 +81,7 @@
       "group": "During your meeting",
       "pages": [
         "docs/101/duringyourmeeting/live-transcription",
+        "docs/101/duringyourmeeting/consent-and-transcription",
         "docs/101/duringyourmeeting/chat-consent",
         "docs/101/duringyourmeeting/note-taking-tools"
       ]
@@ -96,14 +97,14 @@
     {
       "group": "Integrations",
       "pages": [
-        "docs/integrations/Affinity-Integration-7b62d10020ff4778922376b2e4aa8b49",
+        "docs/integrations/Affinity-Integration",
         "docs/integrations/using-granola-with-outlook"
       ]
     },
     {
       "group": "FAQs",
       "pages": [
-        "docs/FAQs/Language-Support-&-Localization",
+        "docs/FAQs/languages",
         "docs/FAQs/featurerequests",
         "docs/FAQs/consent-granola",
         "docs/FAQs/report-a-bug"
