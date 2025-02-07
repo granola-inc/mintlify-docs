@@ -117,56 +117,93 @@ function getQuestionsFromSheet1() {
 }
 
 function writeResults(matchedQuestions) {
+  if (!matchedQuestions || !Array.isArray(matchedQuestions)) {
+    logWithTime(LOG_PREFIX.PROCESS, "⚠️ No questions to write or invalid data structure");
+    return;
+  }
+
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const customerQSheet = ss.getSheetByName("Customer Questions");
   const unansweredSheet = ss.getSheetByName("Unanswered Questions");
   
+  logWithTime(LOG_PREFIX.PROCESS, `Processing ${matchedQuestions.length} questions`);
+  
   // Write to Customer Questions
-  const customerQs = matchedQuestions.map(q => [
-    q.nodeId,
-    q.question,
-    q.isAnswered ? 'Yes' : 'No',
-    q.docMatch?.reference || ''
-  ]);
+  const customerQs = matchedQuestions.map(q => {
+    try {
+      if (!q || typeof q !== 'object') {
+        logWithTime(LOG_PREFIX.PROCESS, `⚠️ Invalid question object: ${JSON.stringify(q)}`);
+        return ["ERROR", "Invalid Question Data", "No", ""];
+      }
+      return [
+        q.nodeId || "MISSING_ID",
+        q.question || "Unknown Question",
+        q.isAnswered ? 'Yes' : 'No',
+        (q.docMatch && q.docMatch.found) ? 
+          `Doc Chunk #${q.docMatch.chunkID} [${q.docMatch.section}]` : 
+          (q.docMatch?.error || "")
+      ];
+    } catch (error) {
+      logWithTime(LOG_PREFIX.PROCESS, `❌ Error processing question for CQ: ${error.message}`);
+      return ["ERROR", "Error Processing Question", "No", ""];
+    }
+  });
 
   if (customerQs.length) {
-    // Log first few rows for debugging
-    logWithTime(LOG_PREFIX.PROCESS, "First 3 rows to write to Customer Questions:");
-    customerQs.slice(0, 3).forEach((row, i) => {
-      logWithTime(LOG_PREFIX.PROCESS, `Row ${i + 1}: ${JSON.stringify(row)}`);
-    });
+    try {
+      // Log first few rows for debugging
+      logWithTime(LOG_PREFIX.PROCESS, "First 3 rows to write to Customer Questions:");
+      customerQs.slice(0, 3).forEach((row, i) => {
+        logWithTime(LOG_PREFIX.PROCESS, `Row ${i + 1}: ${JSON.stringify(row)}`);
+      });
 
-    // Clear existing data (except header) and write new data
-    const lastRow = Math.max(customerQSheet.getLastRow(), 1);
-    if (lastRow > 1) {
-      customerQSheet.getRange(2, 1, lastRow - 1, 4).clearContent();
+      // Clear existing data (except header) and write new data
+      const lastRow = Math.max(customerQSheet.getLastRow(), 1);
+      if (lastRow > 1) {
+        customerQSheet.getRange(2, 1, lastRow - 1, 4).clearContent();
+      }
+      customerQSheet.getRange(2, 1, customerQs.length, 4).setValues(customerQs);
+      logWithTime(LOG_PREFIX.PROCESS, "✅ Successfully wrote to Customer Questions");
+    } catch (error) {
+      logWithTime(LOG_PREFIX.PROCESS, `❌ Error writing to Customer Questions: ${error.message}`);
+      throw error;
     }
-    customerQSheet.getRange(2, 1, customerQs.length, 4).setValues(customerQs);
-    logWithTime(LOG_PREFIX.PROCESS, "✅ Successfully wrote final batch to Customer Questions");
   }
 
   // Write to Unanswered Questions
   const unansweredQs = matchedQuestions
     .filter(q => !q.isAnswered)
-    .map(q => [
-      new Date(),
-      q.nodeId,
-      q.question,
-      'Pending Review',
-      q.docMatch?.section || 'Unknown',
-      ''  // Processing Notes column
-    ]);
+    .map(q => {
+      try {
+        return [
+          new Date(),
+          q.nodeId || "MISSING_ID",
+          q.question || "Unknown Question",
+          'Pending Review',
+          q.docMatch?.section || 'Unknown',
+          q.docMatch?.error || ''  // Processing Notes column
+        ];
+      } catch (error) {
+        logWithTime(LOG_PREFIX.PROCESS, `❌ Error processing question for UQ: ${error.message}`);
+        return [new Date(), "ERROR", "Error Processing Question", "Error", "Error", error.message];
+      }
+    });
 
   if (unansweredQs.length) {
-    logWithTime(LOG_PREFIX.PROCESS, `Writing final batch of ${unansweredQs.length} rows to Unanswered Questions`);
-    
-    // Clear existing data (except header) and write new data
-    const lastRow = Math.max(unansweredSheet.getLastRow(), 1);
-    if (lastRow > 1) {
-      unansweredSheet.getRange(2, 1, lastRow - 1, 6).clearContent();  // Now 6 columns
+    try {
+      logWithTime(LOG_PREFIX.PROCESS, `Writing ${unansweredQs.length} rows to Unanswered Questions`);
+      
+      // Clear existing data (except header) and write new data
+      const lastRow = Math.max(unansweredSheet.getLastRow(), 1);
+      if (lastRow > 1) {
+        unansweredSheet.getRange(2, 1, lastRow - 1, 6).clearContent();  // Now 6 columns
+      }
+      unansweredSheet.getRange(2, 1, unansweredQs.length, 6).setValues(unansweredQs);  // Now 6 columns
+      logWithTime(LOG_PREFIX.PROCESS, `✅ Successfully wrote to Unanswered Questions`);
+    } catch (error) {
+      logWithTime(LOG_PREFIX.PROCESS, `❌ Error writing to Unanswered Questions: ${error.message}`);
+      throw error;
     }
-    unansweredSheet.getRange(2, 1, unansweredQs.length, 6).setValues(unansweredQs);  // Now 6 columns
-    logWithTime(LOG_PREFIX.PROCESS, `✅ Successfully wrote ${unansweredQs.length} rows to Unanswered Questions`);
   }
 }
 
@@ -826,16 +863,14 @@ function processSheet1() {
  * @throws {Error} If key is not set
  */
 function getOpenAIKey() {
-  try {
-    const key = PropertiesService.getScriptProperties().getProperty("OPENAI_API_KEY");
-    if (!key) {
-      throw new Error("OPENAI_API_KEY not set in Script Properties");
-    }
-    return key;
-  } catch (error) {
-    Logger.log("Error in getOpenAIKey: " + error);
-    throw new Error(`API Key Error: ${error.message}`);
+  const userProperties = PropertiesService.getUserProperties();
+  const apiKey = userProperties.getProperty('OPENAI_API_KEY');
+  
+  if (!apiKey) {
+    throw new Error('OpenAI API key not found. Please set it in user properties.');
   }
+  
+  return apiKey;
 }
 
 /**
@@ -1468,4 +1503,192 @@ function formatChunk(section, subsection, buffer) {
     subsection: subsection,
     content: buffer.join('\n').trim()
   };
+}
+
+function processQuestions() {
+  try {
+    logWithTime(LOG_PREFIX.PROCESS, "=== Starting Question Processing ===");
+    
+    // 1. Extract questions from Sheet1
+    logWithTime(LOG_PREFIX.PROCESS, "1. Starting question extraction from Sheet1...");
+    const sheet1 = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+    if (!sheet1) {
+      throw new Error("Sheet1 not found");
+    }
+    const data = sheet1.getDataRange().getValues();
+    logWithTime(LOG_PREFIX.PROCESS, `Found ${data.length - 1} total rows in Sheet1`);
+
+    // Group messages by Node ID
+    logWithTime(LOG_PREFIX.PROCESS, "2. Grouping messages by Node ID...");
+    const threads = {};
+    let messageCount = 0;
+    let granolaResponseCount = 0;
+
+    data.slice(1).forEach((row, index) => {
+      const nodeId = row[0];
+      const content = row[10];  // Column K
+      const fromEmail = row[11]; // Column L
+      
+      if (nodeId && content) {
+        messageCount++;
+        if (!threads[nodeId]) {
+          threads[nodeId] = { messages: [], hasGranolaResponse: false };
+          logWithTime(LOG_PREFIX.PROCESS, `Created new thread for NodeID: ${nodeId}`);
+        }
+        
+        if (fromEmail?.toLowerCase() === 'hey@granola.so') {
+          threads[nodeId].hasGranolaResponse = true;
+          threads[nodeId].granolaResponse = content;
+          granolaResponseCount++;
+          logWithTime(LOG_PREFIX.PROCESS, `Found Granola response in thread: ${nodeId}`);
+        } else {
+          threads[nodeId].messages.push(content);
+        }
+      }
+    });
+
+    logWithTime(LOG_PREFIX.PROCESS, `Processed ${messageCount} messages`);
+    logWithTime(LOG_PREFIX.PROCESS, `Found ${Object.keys(threads).length} unique threads`);
+    logWithTime(LOG_PREFIX.PROCESS, `Found ${granolaResponseCount} Granola responses`);
+
+    // Extract questions from threads
+    logWithTime(LOG_PREFIX.PROCESS, "3. Extracting questions from threads...");
+    const questions = [];
+    for (const [nodeId, thread] of Object.entries(threads)) {
+      logWithTime(LOG_PREFIX.PROCESS, `Processing thread ${nodeId}...`);
+      const question = identifyQuestionInThread(thread.messages[0]);
+      if (question && question !== "No question in message") {
+        logWithTime(LOG_PREFIX.PROCESS, `✅ Question identified: "${question}"`);
+        questions.push({
+          nodeId,
+          question,
+          hasGranolaResponse: thread.hasGranolaResponse,
+          granolaResponse: thread.granolaResponse,
+          fullThread: thread.messages
+        });
+      } else {
+        logWithTime(LOG_PREFIX.PROCESS, `❌ No question found in thread ${nodeId}`);
+      }
+    }
+
+    logWithTime(LOG_PREFIX.PROCESS, `Found ${questions.length} questions to process`);
+
+    // Match against docs
+    logWithTime(LOG_PREFIX.PROCESS, "4. Matching questions against documentation...");
+    const mdSourceSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("MD Source");
+    if (!mdSourceSheet) {
+      throw new Error("MD Source sheet not found");
+    }
+    
+    const matchedQuestions = questions.map((q, index) => {
+      logWithTime(LOG_PREFIX.PROCESS, `Matching question ${index + 1}/${questions.length}: "${q.question}"`);
+      const docMatch = matchDocChunks(q.question);
+      logWithTime(LOG_PREFIX.PROCESS, `Match result: ${docMatch.found ? '✅ Found match' : '❌ No match'}`);
+      return {
+        ...q,
+        isAnsweredInDocs: docMatch.found,
+        docReference: docMatch.found ? 
+          `${docMatch.section} > ${docMatch.subsection}` : 
+          null
+      };
+    });
+
+    // Write to Customer Questions
+    logWithTime(LOG_PREFIX.PROCESS, "5. Writing to Customer Questions sheet...");
+    const customerQSheet = SpreadsheetApp.getActiveSpreadsheet()
+      .getSheetByName("Customer Questions");
+    if (!customerQSheet) {
+      throw new Error("Customer Questions sheet not found");
+    }
+
+    const rows = matchedQuestions.map(q => [
+      q.nodeId,
+      q.question,
+      q.isAnsweredInDocs ? "Yes" : "No",
+      q.docReference || ""
+    ]);
+
+    if (customerQSheet.getLastRow() > 1) {
+      customerQSheet.getRange(2, 1, customerQSheet.getLastRow() - 1, 4).clearContent();
+    }
+    
+    if (rows.length > 0) {
+      customerQSheet.getRange(2, 1, rows.length, 4).setValues(rows);
+      logWithTime(LOG_PREFIX.PROCESS, `✅ Wrote ${rows.length} rows to Customer Questions`);
+    }
+
+    // Process unanswered questions
+    logWithTime(LOG_PREFIX.PROCESS, "6. Processing unanswered questions...");
+    const unansweredSheet = SpreadsheetApp.getActiveSpreadsheet()
+      .getSheetByName("Unanswered Questions");
+    if (!unansweredSheet) {
+      throw new Error("Unanswered Questions sheet not found");
+    }
+
+    const unansweredWithResponses = matchedQuestions.filter(q => 
+      !q.isAnsweredInDocs && q.hasGranolaResponse
+    );
+
+    logWithTime(LOG_PREFIX.PROCESS, `Found ${unansweredWithResponses.length} unanswered questions with Granola responses`);
+
+    const unansweredRows = unansweredWithResponses.map((q, index) => {
+      logWithTime(LOG_PREFIX.PROCESS, `Generating answer for question ${index + 1}/${unansweredWithResponses.length}`);
+      const proposedAnswer = generateAnswerFromResponse(q.question, q.granolaResponse);
+      return [
+        new Date(),
+        q.nodeId,
+        q.question,
+        proposedAnswer,
+        "Based on previous response",
+        ""
+      ];
+    });
+
+    if (unansweredSheet.getLastRow() > 1) {
+      unansweredSheet.getRange(2, 1, unansweredSheet.getLastRow() - 1, 6).clearContent();
+    }
+    
+    if (unansweredRows.length > 0) {
+      unansweredSheet.getRange(2, 1, unansweredRows.length, 6).setValues(unansweredRows);
+      logWithTime(LOG_PREFIX.PROCESS, `✅ Wrote ${unansweredRows.length} rows to Unanswered Questions`);
+    }
+
+    logWithTime(LOG_PREFIX.PROCESS, "=== Question Processing Completed Successfully ===");
+
+  } catch (error) {
+    logWithTime(LOG_PREFIX.PROCESS, `❌ Error in main process: ${error.message}`);
+    logWithTime(LOG_PREFIX.PROCESS, `Stack trace: ${error.stack}`);
+    throw error;
+  }
+}
+
+function generateAnswerFromResponse(question, granolaResponse) {
+  const prompt = `
+    Based on this previous response from Granola support:
+    "${granolaResponse}"
+    
+    Generate a clear, helpful answer for this question:
+    "${question}"
+    
+    Use the same tone and style as the original response, but make it concise and direct.
+  `;
+
+  try {
+    const response = callOpenAIGPT_Basic(prompt);
+    return response || "We'll review your question and provide a response soon.";
+  } catch (error) {
+    logWithTime(LOG_PREFIX.GPT, `Error generating answer: ${error.message}`);
+    return "We'll review your question and provide a response soon.";
+  }
+}
+
+// Add this function to set the API key
+function setOpenAIKey(key) {
+  if (!key) {
+    throw new Error('API key cannot be empty');
+  }
+  
+  const userProperties = PropertiesService.getUserProperties();
+  userProperties.setProperty('OPENAI_API_KEY', key);
+  logWithTime(LOG_PREFIX.PROCESS, "✅ API key saved successfully");
 }

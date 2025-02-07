@@ -67,14 +67,15 @@
   "navigation": [
     {
       "group": "Start here",
-      "pages": ["docs/home"]
+      "pages": ["docs/101/gettingstarted/quickstart"]
     },
     {
       "group": "Getting started",
       "pages": [
         "docs/101/gettingstarted/quickstart",
         "docs/101/gettingstarted/settingyouraccountup",
-        "docs/101/gettingstarted/calendarintegrations"
+        "docs/101/gettingstarted/calendarintegrations",
+        "docs/101/gettingstarted/power-user-tips"
       ]
     },
     {
@@ -106,7 +107,8 @@
         "docs/FAQs/languages",
         "docs/FAQs/featurerequests",
         "docs/FAQs/consent-granola",
-        "docs/FAQs/report-a-bug"
+        "docs/FAQs/report-a-bug",
+        "docs/FAQs/security-faqs"
       ]
     },
     {

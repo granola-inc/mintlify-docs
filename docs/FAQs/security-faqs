@@ -5,7 +5,7 @@ icon: shield
 iconType: solid
 ---
 
-We take your data seriously. Below are common questions regarding how Granola keeps your information safe.
+We take your data seriously. Check out our [Privacy and Security page](https://www.granola.ai/security) here, or see below for common questions regarding how Granola keeps your information safe.
 
 ### Do you store audio or video?
 
@@ -13,7 +13,7 @@ No. Granola only stores text transcripts and notes. Audio is processed in real t
 
 ### Are my notes private?
 
-Yes. By default, your notes are private to you. Sharing links are off unless you enable them. Granola never auto-sends meeting summaries to other participants.
+Yes, your notes are private to you [unless you share them](/docs/101/gettingstarted/sharing-your-notes). You can switch off sharing links as a universal setting or per set of notes. Granola never auto-sends meeting summaries to other participants.
 
 ### Where is data hosted?
 
