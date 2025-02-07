@@ -74,8 +74,7 @@
       "pages": [
         "docs/101/gettingstarted/quickstart",
         "docs/101/gettingstarted/settingyouraccountup",
-        "docs/101/gettingstarted/calendarintegrations",
-        "docs/101/gettingstarted/power-user-tips"
+        "docs/101/gettingstarted/calendarintegrations"
       ]
     },
     {
@@ -91,7 +90,8 @@
       "pages": [
         "docs/101/afteryourmeeting/editing-your-enhanced-notes",
         "docs/101/afteryourmeeting/sharing",
-        "docs/101/afteryourmeeting/Usingtemplates"
+        "docs/101/afteryourmeeting/Usingtemplates",
+        "docs/101/afteryourmeeting/power-user-tips"
       ]
     },
     {

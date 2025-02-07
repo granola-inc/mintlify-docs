@@ -102,6 +102,8 @@ function getQuestionsFromSheet1() {
 
 function writeResults(matchedQuestions) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const customerQSheet = ss.getSheetByName("Customer Questions");
+  const unansweredSheet = ss.getSheetByName("Unanswered Questions");
   
   // Write to Customer Questions
   const customerQs = matchedQuestions.map(q => [
@@ -110,7 +112,23 @@ function writeResults(matchedQuestions) {
     q.isAnswered ? 'Yes' : 'No',
     q.docMatch?.reference || ''
   ]);
-  
+
+  if (customerQs.length) {
+    // Log first few rows for debugging
+    logWithTime(LOG_PREFIX.PROCESS, "First 3 rows to write to Customer Questions:");
+    customerQs.slice(0, 3).forEach((row, i) => {
+      logWithTime(LOG_PREFIX.PROCESS, `Row ${i + 1}: ${JSON.stringify(row)}`);
+    });
+
+    // Clear existing data (except header) and write new data
+    const lastRow = Math.max(customerQSheet.getLastRow(), 1);
+    if (lastRow > 1) {
+      customerQSheet.getRange(2, 1, lastRow - 1, 4).clearContent();
+    }
+    customerQSheet.getRange(2, 1, customerQs.length, 4).setValues(customerQs);
+    logWithTime(LOG_PREFIX.PROCESS, "✅ Successfully wrote final batch to Customer Questions");
+  }
+
   // Write to Unanswered Questions
   const unansweredQs = matchedQuestions
     .filter(q => !q.isAnswered)
@@ -119,19 +137,20 @@ function writeResults(matchedQuestions) {
       q.nodeId,
       q.question,
       'Pending Review',
-      q.docMatch?.section || 'Unknown'
+      q.docMatch?.section || 'Unknown',
+      ''  // Processing Notes column
     ]);
 
-  if (customerQs.length) {
-    ss.getSheetByName("Customer Questions")
-      .getRange(2, 1, customerQs.length, 4)
-      .setValues(customerQs);
-  }
-
   if (unansweredQs.length) {
-    ss.getSheetByName("Unanswered Questions")
-      .getRange(2, 1, unansweredQs.length, 5)
-      .setValues(unansweredQs);
+    logWithTime(LOG_PREFIX.PROCESS, `Writing final batch of ${unansweredQs.length} rows to Unanswered Questions`);
+    
+    // Clear existing data (except header) and write new data
+    const lastRow = Math.max(unansweredSheet.getLastRow(), 1);
+    if (lastRow > 1) {
+      unansweredSheet.getRange(2, 1, lastRow - 1, 6).clearContent();  // Now 6 columns
+    }
+    unansweredSheet.getRange(2, 1, unansweredQs.length, 6).setValues(unansweredQs);  // Now 6 columns
+    logWithTime(LOG_PREFIX.PROCESS, `✅ Successfully wrote ${unansweredQs.length} rows to Unanswered Questions`);
   }
 }
 

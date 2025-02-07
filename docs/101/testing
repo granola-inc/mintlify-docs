@@ -221,93 +221,65 @@ function writeResults(matchedQuestions) {
  */
 function matchDocChunks(questionText) {
   try {
+    logWithTime(LOG_PREFIX.MATCH, "Starting doc chunk matching...");
+    
     // Check cache first
-    const cacheKey = CACHE_PREFIX.CHUNK_MATCH + questionText.trim().substring(0, 100);
+    const cacheKey = CACHE_PREFIX.CHUNK_MATCH + questionText.substring(0, 100);
     const cached = CacheService.getScriptCache().get(cacheKey);
     if (cached) {
-      logWithTime(LOG_PREFIX.MATCH, "✅ Found cached match result");
+      logWithTime(LOG_PREFIX.MATCH, "✅ Found cached match");
       return JSON.parse(cached);
-    }
-
-    logWithTime(LOG_PREFIX.MATCH, "Starting chunk matching...");
-    
-    if (!questionText || questionText.trim() === '') {
-      logWithTime(LOG_PREFIX.MATCH, "⚠️ Empty question received");
-      return { 
-        found: false,
-        error: "Empty question provided"
-      };
     }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const docChunksSheet = ss.getSheetByName("Doc Chunks");
-
+    
     if (!docChunksSheet) {
       throw new Error("Doc Chunks sheet not found");
     }
 
-    const chunkData = docChunksSheet.getDataRange().getValues();
-    if (chunkData.length < 2) {
-      Logger.log("No doc chunks found. Make sure you ran chunkMarkdown() first.");
-      return { 
-        found: false,
-        error: "No chunks available"
-      };
+    const chunks = docChunksSheet.getDataRange().getValues();
+    if (chunks.length < 2) { // Account for header row
+      throw new Error("No chunks found in Doc Chunks sheet");
     }
 
-    // Pre-filter chunks more aggressively
-    const keywords = questionText.toLowerCase().split(/\W+/)
-      .filter(word => word.length > 3);
-    
-    const filteredChunks = chunkData.slice(1).filter(chunk => {
-      const chunkText = chunk[3].toLowerCase();
-      // Require multiple keyword matches
-      const matchCount = keywords.filter(keyword => 
-        chunkText.includes(keyword)
-      ).length;
-      return matchCount >= 2; // Must match at least 2 keywords
-    });
-
-    // Batch process chunks in a single API call
-    if (filteredChunks.length === 0) {
-      return { found: false, error: "No relevant chunks found" };
-    }
-
-    // Take top 3 chunks instead of 5
-    const topChunks = filteredChunks.slice(0, 3);
-    const combinedPrompt = `
-      Question: "${questionText}"
+    // Skip header row
+    for (let i = 1; i < chunks.length; i++) {
+      const [chunkId, section, subsection, content] = chunks[i];
       
-      Review these documentation chunks and identify which ONE best answers the question.
-      If none fully answer it, respond with "NONE".
-      
-      ${topChunks.map((chunk, i) => `
-        CHUNK ${chunk[0]}:
-        ${chunk[3]}
-      `).join('\n\n')}
-      
-      Respond with ONLY the chunk number or "NONE".
-    `;
+      const prompt = `
+        Question: "${questionText}"
+        
+        Document chunk:
+        ${content}
+        
+        Does this chunk directly answer the question above? Reply ONLY with YES or NO.
+      `;
 
-    const response = callOpenAIGPT_Basic(combinedPrompt);
-    const chunkId = response.trim().match(/\d+/)?.[0];
-    
-    if (chunkId) {
-      const matchedChunk = topChunks.find(c => c[0].toString() === chunkId);
-      if (matchedChunk) {
-        return {
+      const answer = callOpenAIGPT_YesNo(prompt);
+      logWithTime(LOG_PREFIX.MATCH, `Chunk ${chunkId} match result: ${answer}`);
+      
+      if (answer === "YES") {
+        const result = {
           found: true,
-          chunkID: matchedChunk[0],
-          section: matchedChunk[1] || "",
-          subsection: matchedChunk[2] || ""
+          chunkId: chunkId,
+          section: section,
+          subsection: subsection,
+          content: content
         };
+        
+        // Cache the result
+        CacheService.getScriptCache().put(cacheKey, JSON.stringify(result), 21600); // 6 hours
+        
+        return result;
       }
     }
 
-    return { found: false, error: "No matching chunks found" };
+    return { found: false };
+
   } catch (error) {
-    logWithTime(LOG_PREFIX.MATCH, `❌ Error: ${error.message}`);
-    throw new Error(`Chunk Matching Error: ${error.message}`);
+    logWithTime(LOG_PREFIX.MATCH, `❌ Error matching chunks: ${error.message}`);
+    return { found: false, error: error.message };
   }
 }
 
@@ -324,20 +296,21 @@ function matchDocChunks(questionText) {
  */
 function callOpenAIGPT_YesNo(promptText) {
   try {
+    logWithTime(LOG_PREFIX.GPT, "Starting Yes/No GPT call...");
+    
     if (!promptText) {
       throw new Error("Prompt text is required");
     }
 
     const apiKey = getOpenAIKey();
-    if (!apiKey) {
-      throw new Error("OpenAI API key not found");
-    }
-
     const url = "https://api.openai.com/v1/chat/completions";
     const payload = {
       model: "gpt-4o",
       messages: [
-        { role: "system", content: "You are a helpful assistant. Respond ONLY with 'YES' or 'NO'." },
+        { 
+          role: "system", 
+          content: "You are a helpful assistant. Respond ONLY with 'YES' or 'NO'." 
+        },
         { role: "user", content: promptText }
       ],
       max_tokens: 5,
@@ -356,14 +329,19 @@ function callOpenAIGPT_YesNo(promptText) {
 
     const response = UrlFetchApp.fetch(url, options);
     const data = JSON.parse(response.getContentText());
-    if (data.choices && data.choices.length > 0) {
-      return data.choices[0].message.content.trim();
+    
+    if (!data.choices || !data.choices[0]) {
+      throw new Error("No response from GPT");
     }
 
-    return "NO"; // Default fallback
+    const answer = data.choices[0].message.content.trim().toUpperCase();
+    logWithTime(LOG_PREFIX.GPT, `GPT Yes/No Response: ${answer}`);
+    
+    return answer === "YES" ? "YES" : "NO";
+
   } catch (error) {
-    Logger.log("Error in callOpenAIGPT_YesNo: " + error);
-    throw new Error(`GPT API Error: ${error.message}`);
+    logWithTime(LOG_PREFIX.GPT, `❌ Error in Yes/No GPT call: ${error.message}`);
+    return "NO"; // Default to NO on error
   }
 }
 
@@ -1091,12 +1069,10 @@ function callOpenAIGPT_ProposeAnswer(userQuestion, entireThread, identifiedQuest
  */
 function callOpenAIGPT_Basic(userPrompt) {
   try {
-    logWithTime(LOG_PREFIX.GPT, "Starting GPT call...");
-    checkRateLimit();
+    logWithTime(LOG_PREFIX.GPT, "Starting basic GPT call...");
     
     if (!userPrompt) {
-      logWithTime(LOG_PREFIX.GPT, "⚠️ Empty prompt received");
-      throw new Error("User prompt is required");
+      throw new Error("Prompt text is required");
     }
 
     const apiKey = getOpenAIKey();
@@ -1106,12 +1082,12 @@ function callOpenAIGPT_Basic(userPrompt) {
       messages: [
         { 
           role: "system", 
-          content: "You are a helpful AI with the same tone as Granola's Mintlify documentation." 
+          content: "You are a helpful AI with the same tone as Granola's documentation." 
         },
         { role: "user", content: userPrompt }
       ],
-      temperature: 0.0,
-      max_tokens: 100
+      max_tokens: 500,
+      temperature: 0.7
     };
 
     const options = {
@@ -1125,6 +1101,8 @@ function callOpenAIGPT_Basic(userPrompt) {
     };
 
     const response = UrlFetchApp.fetch(url, options);
+    logWithTime(LOG_PREFIX.GPT, `Response status: ${response.getResponseCode()}`);
+    
     const data = JSON.parse(response.getContentText());
     
     if (!data.choices || !data.choices[0]) {
@@ -1132,6 +1110,7 @@ function callOpenAIGPT_Basic(userPrompt) {
     }
 
     return data.choices[0].message.content.trim();
+
   } catch (error) {
     logWithTime(LOG_PREFIX.GPT, `❌ Error in basic GPT call: ${error.message}`);
     throw error;
@@ -1343,35 +1322,65 @@ function processUnansweredQuestions(questions, matches) {
 
 // Add this helper function at the top
 function ensureRequiredSheets() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const requiredSheets = {
-    "MD Source": ["Content"],
-    "Doc Chunks": ["Chunk ID", "Section", "Subsection", "Chunk Text"],
-    "Sheet1": ["Node ID", "textContent", "fromEmail"],
-    "Customer Questions": ["Node ID", "Identified Question", "Answered", "Doc Chunk Reference"],
-    "Unanswered Questions": [
-      "Timestamp", 
-      "Node ID", 
-      "Question", 
-      "GPT Proposed Answer", 
-      "Documentation Section",
-      "Processing Notes"  // New column for reasons
-    ]
-  };
-
-  for (const [sheetName, headers] of Object.entries(requiredSheets)) {
-    let sheet = ss.getSheetByName(sheetName);
+  try {
+    logWithTime(LOG_PREFIX.PROCESS, "Validating sheet structure...");
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
     
-    if (!sheet) {
-      logWithTime(LOG_PREFIX.PROCESS, `Creating missing sheet: ${sheetName}`);
-      sheet = ss.insertSheet(sheetName);
-      // Add headers
-      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      // Freeze header row
-      sheet.setFrozenRows(1);
-    }
+    const requiredSheets = {
+      [CONFIG.SHEETS.MD_SOURCE]: ["Content"],
+      [CONFIG.SHEETS.DOC_CHUNKS]: ["Chunk ID", "Section", "Subsection", "Chunk Text"],
+      [CONFIG.SHEETS.CUSTOMER_QUESTIONS]: ["Node ID", "Identified Question", "Answered", "Doc Chunk Reference"],
+      [CONFIG.SHEETS.UNANSWERED_QUESTIONS]: [
+        "Timestamp",
+        "Node ID",
+        "Question",
+        "GPT Proposed Answer",
+        "Documentation Section",
+        "Processing Notes"
+      ]
+    };
+
+    Object.entries(requiredSheets).forEach(([sheetName, headers]) => {
+      let sheet = ss.getSheetByName(sheetName);
+      
+      if (!sheet) {
+        logWithTime(LOG_PREFIX.PROCESS, `Creating sheet: ${sheetName}`);
+        try {
+          sheet = ss.insertSheet(sheetName);
+          sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+          sheet.setFrozenRows(1);
+          // Optional: Add some basic formatting
+          sheet.getRange(1, 1, 1, headers.length).setBackground('#f3f3f3').setFontWeight('bold');
+          logWithTime(LOG_PREFIX.PROCESS, `✅ Created sheet: ${sheetName}`);
+        } catch (error) {
+          if (error.message.includes('already exists')) {
+            sheet = ss.getSheetByName(sheetName);
+            logWithTime(LOG_PREFIX.PROCESS, `Sheet ${sheetName} already exists, validating structure...`);
+          } else {
+            throw error;
+          }
+        }
+      }
+
+      // Validate sheet structure
+      if (!Validator.validateSheetStructure(sheet, headers)) {
+        logWithTime(LOG_PREFIX.PROCESS, `❌ Invalid structure in sheet: ${sheetName}`);
+        logWithTime(LOG_PREFIX.PROCESS, `Expected headers: ${headers.join(', ')}`);
+        const currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+        logWithTime(LOG_PREFIX.PROCESS, `Current headers: ${currentHeaders.join(', ')}`);
+        throw new Error(`Invalid structure in sheet: ${sheetName}`);
+      }
+      
+      logWithTime(LOG_PREFIX.PROCESS, `✅ Validated sheet: ${sheetName}`);
+    });
+
+    logWithTime(LOG_PREFIX.PROCESS, "✅ All sheets validated successfully");
+    return true;
+
+  } catch (error) {
+    logWithTime(LOG_PREFIX.PROCESS, `❌ Sheet validation error: ${error.message}`);
+    throw new Error(`Sheet validation failed: ${error.message}`);
   }
-  logWithTime(LOG_PREFIX.PROCESS, "✅ All required sheets verified/created");
 }
 
 // Update the main orchestration function
@@ -1421,7 +1430,7 @@ function processAllQuestions() {
   }
 }
 
-// Add this function to identify questions in thread content
+// Function to identify questions in thread content
 function identifyQuestionInThread(content) {
   try {
     if (!content) {
@@ -1435,7 +1444,6 @@ function identifyQuestionInThread(content) {
       return cached;
     }
 
-    // Prepare prompt for GPT
     const prompt = `
       Analyze this message and identify the main question being asked.
       If there are multiple questions, return the most important one.
@@ -1443,50 +1451,15 @@ function identifyQuestionInThread(content) {
       Keep the question concise but complete.
 
       Message:
-      "${content.substring(0, 1000)}"  // Limit content length
+      "${content.substring(0, 1000)}"
 
       Question (respond with ONLY the question or "No question in message"):
     `;
 
-    // Call GPT with the prompt
-    const apiKey = getOpenAIKey();
-    const url = "https://api.openai.com/v1/chat/completions";
-    const payload = {
-      model: "gpt-4o",
-      messages: [
-        { 
-          role: "system", 
-          content: "You are a helpful AI that identifies questions in text. Respond only with the identified question or 'No question in message'."
-        },
-        { role: "user", content: prompt }
-      ],
-      temperature: 0.0,
-      max_tokens: 100
-    };
-
-    const options = {
-      method: "post",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      payload: JSON.stringify(payload),
-      muteHttpExceptions: true
-    };
-
-    // Make API call
-    const response = UrlFetchApp.fetch(url, options);
-    const data = JSON.parse(response.getContentText());
-    
-    if (!data.choices || !data.choices[0]) {
-      logWithTime(LOG_PREFIX.GPT, "⚠️ No response from GPT");
-      return "No question in message";
-    }
-
-    const question = data.choices[0].message.content.trim();
+    const question = callOpenAIGPT_Basic(prompt);
     
     // Cache the result
-    CacheService.getScriptCache().put(cacheKey, question, 21600); // Cache for 6 hours
+    CacheService.getScriptCache().put(cacheKey, question, 21600); // 6 hours
     
     return question;
 
@@ -1563,8 +1536,7 @@ function processQuestions() {
           nodeId,
           question,
           hasGranolaResponse: thread.hasGranolaResponse,
-          granolaResponse: thread.granolaResponse,
-          fullThread: thread.messages
+          granolaResponse: thread.granolaResponse
         });
       } else {
         logWithTime(LOG_PREFIX.PROCESS, `❌ No question found in thread ${nodeId}`);
