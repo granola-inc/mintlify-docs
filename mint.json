@@ -98,6 +98,7 @@
       "group": "Integrations",
       "pages": [
         "docs/integrations/Affinity-Integration",
+        "docs/integrations/Notion-Integration",
         "docs/integrations/using-granola-with-outlook"
       ]
     },
