@@ -1,6 +1,7 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "Granola",
+  "homepage": "docs/101/gettingstarted/home.mdx",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg",
@@ -67,7 +68,9 @@
   "navigation": [
     {
       "group": "Start here",
-      "pages": ["docs/101/gettingstarted/quickstart"]
+      "pages": [
+        "docs/101/gettingstarted/quickstart"
+      ]
     },
     {
       "group": "Getting started",
